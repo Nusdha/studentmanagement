@@ -2,45 +2,58 @@ package com.example.studentManagementSystem.controller;
 
 import com.example.studentManagementSystem.model.Student;
 import com.example.studentManagementSystem.service.impl.StudentService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
 
 @RestController
-@RequestMapping("/api/Student")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/student")
 public class StudentController {
     @Autowired
     private StudentService studentService;
+    public StudentController(){
+    }
+
     @PostMapping
-    public ResponseEntity<Student> saveStudent(@RequestBody Student student){
-    return new ResponseEntity<Student>(studentService.saveStudent(student),HttpStatus.CREATED);
+    public ResponseEntity<Student> createStudent(@RequestBody Student student){
+    Student createdStudent = this.studentService.createStudent(student);
+    return ResponseEntity.ok(createdStudent);
     }
     //GetAll Rest Api
     @GetMapping
-    public List<Student> getAllStudent(){
-    return studentService.getAllStudent();
+    public ResponseEntity<List<Student>> getAllStudent(){
+        List<Student> student = this.studentService.getAllStudent();
+        return ResponseEntity.ok(student);
     }
     //Get by Id Rest Api
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     // localhost:8080/api/Student/1
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") long studentID){
-    return new ResponseEntity<Student>(studentService.getStudentById(studentID),HttpStatus.OK);
+    public ResponseEntity<Student> getStudentById(@PathVariable long id){
+    Student student = this.studentService.getStudentById(id);
+    return student != null ? ResponseEntity.ok(student) : ResponseEntity.notFound().build();
     }
     //Update Rest Api
-    @PutMapping("{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable("id") long id,@RequestBody Student student){
-    return new ResponseEntity<Student>(studentService.updateStudent(student,id),HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable long id,@RequestBody Student student){
+        Student updatedStudent = this.studentService.updateStudent(student, id);
+        return updatedStudent != null ? ResponseEntity.ok(updatedStudent) : ResponseEntity.notFound().build();
     }
     //Delete Rest Api
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("id") long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable long id){
     //delete Student from db
-    studentService.deleteStudent(id);
-    return new ResponseEntity<String>("Student deleted Successfully.",HttpStatus.OK);
+        this.studentService.deleteStudent(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/students/year/{year}")
