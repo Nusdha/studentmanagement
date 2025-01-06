@@ -1,7 +1,6 @@
 package com.example.studentManagementSystem.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,38 +20,24 @@ public class StudentServiceImpl implements StudentService{
  //get employee using id
     @Override
     public Student getStudentById(long id) {
-        Optional<Student> student = studentRepository.findById(id);
-        return student.orElse(null);
+        return studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
     }
  //update employee
     @Override
     public Student updateStudent(Student student, long id) {
-        if (studentRepository.existsById(id)) {
-            student.setId(id);
-            return studentRepository.save(student);
-        }
-        return null;
+        Student exitingStudent = getStudentById(id);
+        exitingStudent.setFirstName(student.getFirstName());
+        exitingStudent.setLastName(student.getLastName());
+        exitingStudent.setEmail(student.getEmail());
+        exitingStudent.setDepartment(student.getDepartment());
+        exitingStudent.setYearOfEnrollment(student.getYearOfEnrollment());
+        return studentRepository.save(exitingStudent);
     }
 
     @Override
     public void deleteStudent (long id) {
         studentRepository.deleteById(id);
     }
-
-    @Override
-    public List<Student> getStudentByEnrollmentYear(int year) {
-        return studentRepository.findByEnrollmentYear(year);
-    }
-
-    public String getStudentDepartmentById(String studentId) {
-        Student student = (Student) studentRepository.findAll();
-        return student != null ? student.getDepartment() : null;
-    }
-
-    public void deleteAllStudentsByEnrollmentYear(int year) {
-        studentRepository.findByEnrollmentYear(year);
-    }
-    
     @Override
     public Student createStudent(Student student) {
         return studentRepository.save(student);

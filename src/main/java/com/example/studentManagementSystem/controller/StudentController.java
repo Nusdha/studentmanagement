@@ -4,7 +4,9 @@ import com.example.studentManagementSystem.model.Student;
 import com.example.studentManagementSystem.service.impl.StudentService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
@@ -26,39 +28,31 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student student){
-    Student createdStudent = this.studentService.createStudent(student);
-    return ResponseEntity.ok(createdStudent);
+        return new ResponseEntity<>(studentService.createStudent(student),HttpStatus.CREATED);
     }
     //GetAll Rest Api
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudent(){
-        List<Student> student = this.studentService.getAllStudent();
-        return ResponseEntity.ok(student);
+    public List<Student> getAllStudent(){
+        return studentService.getAllStudent();
     }
     //Get by Id Rest Api
     @GetMapping("/{id}")
     // localhost:8080/api/Student/1
     public ResponseEntity<Student> getStudentById(@PathVariable long id){
-    Student student = this.studentService.getStudentById(id);
-    return student != null ? ResponseEntity.ok(student) : ResponseEntity.notFound().build();
+    return new ResponseEntity<>(studentService.getStudentById(id),HttpStatus.OK);
     }
     //Update Rest Api
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable long id,@RequestBody Student student){
-        Student updatedStudent = this.studentService.updateStudent(student, id);
-        return updatedStudent != null ? ResponseEntity.ok(updatedStudent) : ResponseEntity.notFound().build();
+        return new ResponseEntity<>(studentService.updateStudent(student, id),HttpStatus.OK);
     }
     //Delete Rest Api
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable long id){
+    public ResponseEntity<String> deleteStudent(@PathVariable long id){
     //delete Student from db
-        this.studentService.deleteStudent(id);
-        return ResponseEntity.noContent().build();
+        studentService.deleteStudent(id);
+        return new ResponseEntity<>("Student deleyted successfully",HttpStatus.OK);
     }
 
-    @GetMapping("/students/year/{year}")
-    public List<Student> getStudentsByYear(@PathVariable int year) {
-        return studentService.getStudentByEnrollmentYear(year);
-    }
     
 }

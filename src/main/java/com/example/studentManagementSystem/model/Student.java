@@ -1,12 +1,13 @@
 package com.example.studentManagementSystem.model;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "student")
 @Data
-
+@Builder
 public class Student {
     @Id
     private long id;
