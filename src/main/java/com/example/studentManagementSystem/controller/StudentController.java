@@ -35,24 +35,26 @@ public class StudentController {
     public List<Student> getAllStudent(){
         return studentService.getAllStudent();
     }
+
     //Get by Id Rest Api
     @GetMapping("/{id}")
     // localhost:8080/api/Student/1
     public ResponseEntity<Student> getStudentById(@PathVariable long id){
     return new ResponseEntity<>(studentService.getStudentById(id),HttpStatus.OK);
     }
+
     //Update Rest Api
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable long id,@RequestBody Student student){
         return new ResponseEntity<>(studentService.updateStudent(student, id),HttpStatus.OK);
     }
+
     //Delete Rest Api
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudent(@PathVariable long id){
     //delete Student from db
         studentService.deleteStudent(id);
-        return new ResponseEntity<>("Student deleyted successfully",HttpStatus.OK);
+        return new ResponseEntity<>("Student deleted successfully",HttpStatus.OK);
     }
-
-    
+  
 }
