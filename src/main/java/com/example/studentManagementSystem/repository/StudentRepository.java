@@ -5,5 +5,4 @@ import com.example.studentManagementSystem.model.Student;
 
 public interface StudentRepository  extends MongoRepository<Student, Long> {
 
-
 }
